@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>GIS Tools – File & Converter Hub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <!-- jsPDF for Text → PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- QRCode.js (client-side, no API) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+
+<body>
+    <header class="top-bar">
+        <div class="brand">
+            <span class="logo-circle">GIS</span>
+            <div>
+                <h1>GIS Tools – File & Converter Hub</h1>
+                <p>Free online tools – Powered by Grow In Sky</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="layout">
+        
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <h2>Tools</h2>
+            <button class="nav-btn active" data-target="wordCounter">📝 Word & Character Counter</button>
+            <button class="nav-btn" data-target="caseConverter">🔠 Case Converter</button>
+            <button class="nav-btn" data-target="textToPdf">📄 Text → PDF</button>
+            <button class="nav-btn" data-target="jpgToPng">🖼 JPG → PNG</button>
+            <button class="nav-btn" data-target="pngToJpg">🖼 PNG → JPG</button>
+
+            <!-- New Tools -->
+            <button class="nav-btn" data-target="unitConverter">📏 Unit Converter</button>
+            <button class="nav-btn" data-target="bmiCalc">⚖️ BMI Calculator</button>
+            <button class="nav-btn" data-target="ageCalc">🎂 Age Calculator</button>
+            <button class="nav-btn" data-target="passwordGen">🔑 Password Generator</button>
+            <button class="nav-btn" data-target="urlTool">🔗 URL Encode/Decode</button>
+            <button class="nav-btn" data-target="base64Tool">🧬 Base64 Encode/Decode</button>
+            <button class="nav-btn" data-target="jsonTool">📚 JSON Formatter</button>
+            <button class="nav-btn" data-target="qrTool">📱 QR Code Generator</button>
+            <button class="nav-btn" data-target="textImageTool">🖌 Text → Image</button>
+
+            <!-- About Page -->
+            <a href="about.html" class="nav-btn" style="margin-top:1rem;font-weight:600;">
+                ℹ️ About
+            </a>
+        </nav>
+
+        <!-- Content Area -->
+        <section class="content">
+
+            <!-- Word Counter -->
+            <section id="wordCounter" class="tool-section active">
+                <h2>📝 Word & Character Counter</h2>
+                <p>Type or paste text below. The tool automatically counts words, characters, and lines.</p>
+                <textarea id="wcInput" placeholder="Enter or paste your text here..."></textarea>
+
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <span class="stat-label">Words</span>
+                        <span id="wordCount" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Characters (with spaces)</span>
+                        <span id="charCount" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Characters (without spaces)</span>
+                        <span id="charCountNoSpace" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Lines</span>
+                        <span id="lineCount" class="stat-value">0</span>
+                    </div>
+                </div>
+
+                <button id="wcClear" class="primary-btn">Clear Text</button>
+            </section>
+
+            <!-- Case Converter -->
+            <section id="caseConverter" class="tool-section">
+                <h2>🔠 Case Converter</h2>
+                <p>Convert your text into UPPERCASE, lowercase, Title Case or Sentence Case.</p>
+                <textarea id="caseInput" placeholder="Enter or paste text here..."></textarea>
+
+                <div class="btn-row">
+                    <button class="secondary-btn" data-case="upper">UPPERCASE</button>
+                    <button class="secondary-btn" data-case="lower">lowercase</button>
+                    <button class="secondary-btn" data-case="title">Title Case</button>
+                    <button class="secondary-btn" data-case="sentence">Sentence Case</button>
+                </div>
+
+                <div class="output-block">
+                    <div class="output-header">
+                        <span>Converted Text</span>
+                        <button id="copyCaseOutput" class="mini-btn">Copy</button>
+                    </div>
+                    <textarea id="caseOutput" readonly></textarea>
+                </div>
+            </section>
+
+            <!-- Text to PDF -->
+            <section id="textToPdf" class="tool-section">
+                <h2>📄 Text → PDF Converter</h2>
+                <p>Convert plain text into a clean PDF file. Everything is processed inside your browser.</p>
+
+                <textarea id="pdfText" placeholder="Enter text to convert into PDF..."></textarea>
+
+                <div class="pdf-options">
+                    <label>
+                        File Name:
+                        <input id="pdfFileName" type="text" placeholder="my-document" />
+                    </label>
+                    <label>
+                        Page Size:
+                        <select id="pdfPageSize">
+                            <option value="a4">A4</option>
+                            <option value="letter">Letter</option>
+                        </select>
+                    </label>
+                </div>
+
+                <button id="generatePdfBtn" class="primary-btn">Download PDF</button>
+                <p class="hint">Note: PDF creation is fully client-side. No files are uploaded.</p>
+            </section>
+
+            <!-- JPG to PNG -->
+            <section id="jpgToPng" class="tool-section">
+                <h2>🖼 JPG → PNG Converter</h2>
+                <p>Convert your JPG images into high-quality PNG format. All processing happens locally.</p>
+
+                <div class="file-drop">
+                    <input type="file" id="jpgInput" accept="image/jpeg" />
+                    <p>Select a JPG file (max 10–15MB recommended)</p>
+                </div>
+
+                <canvas id="jpgCanvas" class="hidden"></canvas>
+
+                <div id="jpgResult" class="download-box hidden">
+                    <p>Your file is ready! Download the PNG below:</p>
+                    <a id="jpgDownloadLink" class="primary-btn" download="converted.png">Download PNG</a>
+                </div>
+                <p class="hint">Note: Large images may take a few seconds to process.</p>
+            </section>
+
+            <!-- PNG to JPG -->
+            <section id="pngToJpg" class="tool-section">
+                <h2>🖼 PNG → JPG Converter</h2>
+                <p>Convert transparent PNG images into JPG with a white background.</p>
+
+                <div class="file-drop">
+                    <input type="file" id="pngInput" accept="image/png" />
+                    <p>Select a PNG file (max 10–15MB recommended)</p>
+                </div>
+
+                <canvas id="pngCanvas" class="hidden"></canvas>
+
+                <div id="pngResult" class="download-box hidden">
+                    <p>Your file is ready! Download the JPG below:</p>
+                    <a id="pngDownloadLink" class="primary-btn" download="converted.jpg">Download JPG</a>
+                </div>
+                <p class="hint">Note: Transparent areas will be filled with white color.</p>
+            </section>
+
+            <!-- Unit Converter -->
+            <section id="unitConverter" class="tool-section">
+                <h2>📏 Unit Converter</h2>
+                <p>Convert basic units like length, weight, and temperature.</p>
+
+                <h3 style="font-size:0.9rem;margin-top:0.6rem;">Length: CM ↔ Inches</h3>
+                <p class="hint">Enter any one value. The other will be calculated automatically.</p>
+                <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;">
+                    <input id="lenCm" type="number" placeholder="Centimeters" />
+                    <input id="lenIn" type="number" placeholder="Inches" />
+                    <button id="convertLength" class="secondary-btn">Convert</button>
+                </div>
+
+                <h3 style="font-size:0.9rem;margin-top:0.6rem;">Weight: KG ↔ Pounds</h3>
+                <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;">
+                    <input id="wtKg" type="number" placeholder="Kilograms" />
+                    <input id="wtLb" type="number" placeholder="Pounds" />
+                    <button id="convertWeight" class="secondary-btn">Convert</button>
+                </div>
+
+                <h3 style="font-size:0.9rem;margin-top:0.6rem;">Temperature: °C ↔ °F</h3>
+                <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;">
+                    <input id="tempC" type="number" placeholder="Celsius" />
+                    <input id="tempF" type="number" placeholder="Fahrenheit" />
+                    <button id="convertTemp" class="secondary-btn">Convert</button>
+                </div>
+            </section>
+
+            <!-- BMI Calculator -->
+            <section id="bmiCalc" class="tool-section">
+                <h2>⚖️ BMI Calculator</h2>
+                <p>Calculate your Body Mass Index based on your weight and height.</p>
+                <div style="display:flex;flex-wrap:wrap;gap:0.7rem;margin-bottom:0.75rem;">
+                    <label>
+                        <span style="font-size:0.8rem;color:#9ca3af;">Weight (kg)</span><br />
+                        <input id="bmiWeight" type="number" placeholder="e.g. 70" />
+                    </label>
+                    <label>
+                        <span style="font-size:0.8rem;color:#9ca3af;">Height (cm)</span><br />
+                        <input id="bmiHeight" type="number" placeholder="e.g. 170" />
+                    </label>
+                </div>
+                <button id="bmiCalcBtn" class="primary-btn">Calculate BMI</button>
+                <p id="bmiResult" class="hint" style="margin-top:0.7rem;"></p>
+            </section>
+
+            <!-- Age Calculator -->
+            <section id="ageCalc" class="tool-section">
+                <h2>🎂 Age Calculator</h2>
+                <p>Enter your date of birth to calculate your exact age.</p>
+                <label style="font-size:0.85rem;color:#9ca3af;">
+                    Date of Birth:
+                    <input id="ageDob" type="date" />
+                </label>
+                <br /><br />
+                <button id="ageCalcBtn" class="primary-btn">Calculate Age</button>
+                <p id="ageResult" class="hint" style="margin-top:0.7rem;"></p>
+            </section>
+
+            <!-- Password Generator -->
+            <section id="passwordGen" class="tool-section">
+                <h2>🔑 Password Generator</h2>
+                <p>Generate a strong and secure random password instantly.</p>
+
+                <div style="display:flex;flex-wrap:wrap;gap:0.8rem;margin-bottom:0.8rem;">
+                    <label>
+                        <span style="font-size:0.8rem;color:#9ca3af;">Length</span><br />
+                        <input id="passLength" type="number" value="12" min="4" max="64" />
+                    </label>
+                    <label><input type="checkbox" id="passUpper" checked /> ABC (Uppercase)</label>
+                    <label><input type="checkbox" id="passLower" checked /> abc (Lowercase)</label>
+                    <label><input type="checkbox" id="passNumbers" checked /> 123 (Numbers)</label>
+                    <label><input type="checkbox" id="passSymbols" checked /> @#$ (Symbols)</label>
+                </div>
+
+                <button id="passGenBtn" class="primary-btn">Generate Password</button>
+
+                <div class="output-block" style="margin-top:0.9rem;">
+                    <div class="output-header">
+                        <span>Generated Password</span>
+                        <button id="passCopyBtn" class="mini-btn">Copy</button>
+                    </div>
+                    <textarea id="passOutput" readonly></textarea>
+                </div>
+            </section>
+
+            <!-- URL Encode / Decode -->
+            <section id="urlTool" class="tool-section">
+                <h2>🔗 URL Encode / Decode</h2>
+                <p>Convert text into URL-safe format or decode it back to normal text.</p>
+                <textarea id="urlInput" placeholder="Enter text or URL here..."></textarea>
+
+                <div class="btn-row">
+                    <button id="urlEncodeBtn" class="secondary-btn">Encode</button>
+                    <button id="urlDecodeBtn" class="secondary-btn">Decode</button>
+                </div>
+
+                <div class="output-block">
+                    <div class="output-header">
+                        <span>Result</span>
+                    </div>
+                    <textarea id="urlOutput" readonly></textarea>
+                </div>
+            </section>
+
+            <!-- Base64 Encode / Decode -->
+            <section id="base64Tool" class="tool-section">
+                <h2>🧬 Base64 Encode / Decode</h2>
+                <p>Encode text to Base64 or decode Base64 text back to plain text.</p>
+                <textarea id="b64Input" placeholder="Enter plain text or Base64 encoded text..."></textarea>
+
+                <div class="btn-row">
+                    <button id="b64EncodeBtn" class="secondary-btn">Encode</button>
+                    <button id="b64DecodeBtn" class="secondary-btn">Decode</button>
+                </div>
+
+                <div class="output-block">
+                    <div class="output-header">
+                        <span>Result</span>
+                    </div>
+                    <textarea id="b64Output" readonly></textarea>
+                </div>
+            </section>
+
+            <!-- JSON Formatter -->
+            <section id="jsonTool" class="tool-section">
+                <h2>📚 JSON Formatter</h2>
+                <p>Format raw JSON into readable format or minify it into a compact form.</p>
+
+                <textarea id="jsonInput" placeholder='{"name":"Ahmed","age":20}'></textarea>
+
+                <div class="btn-row">
+                    <button id="jsonFormatBtn" class="secondary-btn">Format (Pretty)</button>
+                    <button id="jsonMinifyBtn" class="secondary-btn">Minify</button>
+                </div>
+
+                <div class="output-block">
+                    <div class="output-header">
+                        <span>Result</span>
+                    </div>
+                    <textarea id="jsonOutput" readonly></textarea>
+                </div>
+            </section>
+
+            <!-- QR Code Generator -->
+            <section id="qrTool" class="tool-section">
+                <h2>📱 QR Code Generator</h2>
+                <p>Generate a QR Code using text, URL, phone number, or any information.</p>
+                <textarea id="qrText" placeholder="Enter text or URL here..."></textarea>
+
+                <button id="qrGenerateBtn" class="primary-btn" style="margin-top:0.7rem;">Generate QR Code</button>
+
+                <div id="qrContainer" style="margin-top:1rem;"></div>
+
+                <p class="hint">Tip: Right-click the QR code and select “Save image as…” to download.</p>
+            </section>
+
+            <!-- Text to Image -->
+            <section id="textImageTool" class="tool-section">
+                <h2>🖌 Text → Image</h2>
+                <p>Convert simple text into a shareable image — perfect for posts, captions, and quotes.</p>
+                <textarea id="txtImgText" placeholder="Enter your text here..."></textarea>
+
+                <button id="txtImgDownloadBtn" class="primary-btn" style="margin-top:0.7rem;">Generate & Download Image</button>
+
+                <canvas id="txtImgCanvas" class="hidden"></canvas>
+
+                <div id="txtImgResult" class="download-box hidden">
+                    <p>Your image is ready! Click below to download:</p>
+                    <a id="txtImgDownloadLink" class="primary-btn" download="text-image.png">Download Image</a>
+                </div>
+            </section>
+
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <p>© <span id="year"></span> GIS (Grow In Sky) – Free Online Tools Hub</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
